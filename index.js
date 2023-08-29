@@ -5,10 +5,23 @@ const hostname = "localhost";
 const port = 8080;
 
 const server = http.createServer((req, res) => {
-  fs.readFile("index.html", (err, data) => {
-    res.statusCode = 200;
-    res.setHeader("Content-type", "text/html");
-    res.end(data);
+  let filename = req.url.slice(1) + ".html";
+  if (filename == ".html") {
+    filename = "index.html";
+  }
+  console.log(filename);
+  fs.readFile(filename, (err, data) => {
+    if (err) {
+      fs.readFile("404.html", (err, data) => {
+        res.statusCode = 404;
+        res.setHeader("Content-type", "text/html");
+        res.end(data);
+      });
+    } else {
+      res.statusCode = 200;
+      res.setHeader("Content-type", "text/html");
+      res.end(data);
+    }
   });
 });
 
